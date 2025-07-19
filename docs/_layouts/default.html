@@ -1,17 +1,17 @@
-<!-- _layouts/default.html -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ page.title | default: site.title }}</title>
   <meta name="description" content="{{ page.excerpt | default: site.description }}">
   <!-- スタイルシート -->
-  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 </head>
 <body>
   <header>
     <div class="header-content">
-      <h1><a href="{{ "/" | relative_url }}">{{ site.title }}</a></h1>
+      <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
     </div>
   </header>
   <main>

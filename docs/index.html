@@ -18,7 +18,7 @@ title: ボードゲームルールライブラリ
   <div class="game-card" data-difficulty="{{ game.difficulty }}" data-title="{{ game.title | downcase }}">
     <div class="game-image">
       {% if game.image %}
-        <img src="/assets/images/{{ game.image }}" alt="{{ game.title }}" onerror="this.style.display='none'; this.parentElement.innerHTML='🎲';">
+        <img src="{{ '/assets/images/' | append: game.image | relative_url }}" alt="{{ game.title }}" onerror="this.style.display='none'; this.parentElement.innerHTML='🎲';">
       {% else %}
         🎲
       {% endif %}
@@ -32,8 +32,7 @@ title: ボードゲームルールライブラリ
       <span class="time">{{ game.time }}</span>
       <span class="age">{{ game.age }}</span>
       <span class="description">{{ game.description }}</span>
-      <span class="rules-url">{{ game.rulesUrl }}</span>
-      <span class="summary-url">{{ game.summaryUrl }}</span>
+      <span class="id">{{ game.id }}</span>
     </div>
   </div>
   {% endfor %}
@@ -78,24 +77,8 @@ title: ボードゲームルールライブラリ
 </div>
 
 <script>
-// ゲームデータをJavaScriptで使用するために変換
-const games = [
-  {% for game in site.data.games.games %}
-  {
-    id: "{{ game.id }}",
-    title: "{{ game.title }}",
-    image: "{{ game.image }}",
-    players: "{{ game.players }}",
-    time: "{{ game.time }}",
-    age: "{{ game.age }}",
-    difficulty: "{{ game.difficulty }}",
-    difficultyText: "{{ game.difficultyText }}",
-    description: "{{ game.description | escape }}",
-    rulesUrl: "{{ game.rulesUrl }}",
-    summaryUrl: "{{ game.summaryUrl }}"
-  }{% unless forloop.last %},{% endunless %}
-  {% endfor %}
-];
+// ベースURLを取得
+const baseUrl = '{{ site.baseurl }}';
 
 let currentFilter = 'all';
 let searchTerm = '';
@@ -139,10 +122,26 @@ document.getElementById('searchInput').addEventListener('input', function(e) {
 document.querySelectorAll('.game-card').forEach(card => {
   card.addEventListener('click', function() {
     const title = this.querySelector('.game-title').textContent;
-    const game = games.find(g => g.title === title);
-    if (game) {
-      showGameModal(game);
-    }
+    const players = this.querySelector('.players').textContent;
+    const time = this.querySelector('.time').textContent;
+    const age = this.querySelector('.age').textContent;
+    const difficulty = this.querySelector('.game-difficulty').textContent;
+    const difficultyClass = this.querySelector('.game-difficulty').className;
+    const description = this.querySelector('.description').textContent;
+    const gameId = this.querySelector('.id').textContent;
+    const image = this.querySelector('.game-image img');
+    
+    showGameModal({
+      title: title,
+      players: players,
+      time: time,
+      age: age,
+      difficultyText: difficulty,
+      difficulty: difficultyClass.replace('game-difficulty difficulty-', ''),
+      description: description,
+      id: gameId,
+      imageSrc: image ? image.src : null
+    });
   });
 });
 
@@ -158,14 +157,15 @@ function showGameModal(game) {
   
   // 画像の設定
   const modalImage = document.getElementById('modalImage');
-  if (game.image) {
-    modalImage.innerHTML = `<img src="/assets/images/${game.image}" alt="${game.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='🎲';">`;
+  if (game.imageSrc) {
+    modalImage.innerHTML = `<img src="${game.imageSrc}" alt="${game.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='🎲';">`;
   } else {
     modalImage.textContent = '🎲';
   }
   
-  document.getElementById('modalRulesLink').href = game.rulesUrl;
-  document.getElementById('modalSummaryLink').href = game.summaryUrl;
+  // ダウンロードリンクの設定
+  document.getElementById('modalRulesLink').href = `${baseUrl}/downloads/${game.id}-rules.pdf`;
+  document.getElementById('modalSummaryLink').href = `${baseUrl}/downloads/${game.id}-summary.pdf`;
   
   document.getElementById('gameModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
