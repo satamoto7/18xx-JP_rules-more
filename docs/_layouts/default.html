@@ -1,0 +1,24 @@
+<!-- _layouts/default.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ page.title | default: site.title }}</title>
+  <meta name="description" content="{{ page.excerpt | default: site.description }}">
+  <!-- スタイルシート -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1><a href="{{ "/" | relative_url }}">{{ site.title }}</a></h1>
+    </div>
+  </header>
+  <main>
+    {{ content }}
+  </main>
+  <footer>
+    <p>&copy; 2025 {{ site.title }}</p>
+  </footer>
+</body>
+</html>
