@@ -1,0 +1,36 @@
+games:
+  - id: wingspan
+    title: ウイングスパン
+    image: wingspan.jpg
+    players: 1-5人
+    time: 40-70分
+    age: 10歳以上
+    difficulty: intermediate
+    difficultyText: 経験者向け
+    description: 鳥類をテーマにした、美しいアートワークが特徴的な拡大再生産ゲームです。170種類の鳥カードを使って、自分の鳥獣保護区を発展させていきます。
+    rulesUrl: /downloads/wingspan-rules.pdf
+    summaryUrl: /downloads/wingspan-summary.pdf
+    
+  - id: azul
+    title: アズール
+    image: azul.png
+    players: 2-4人
+    time: 30-45分
+    age: 8歳以上
+    difficulty: beginner
+    difficultyText: 初心者向け
+    description: ポルトガルのアズレージョ（装飾タイル）をテーマにした、美しいタイル配置ゲームです。シンプルなルールながら奥深い戦略性を持っています。
+    rulesUrl: /downloads/azul-rules.pdf
+    summaryUrl: /downloads/azul-summary.pdf
+    
+  - id: splendor
+    title: 宝石の煌き
+    image: splendor.png
+    players: 2-4人
+    time: 30分
+    age: 10歳以上
+    difficulty: beginner
+    difficultyText: 初心者向け
+    description: 宝石商となって富と名声を競うエンジンビルディングゲームです。シンプルなルールで短時間で楽しめます。
+    rulesUrl: /downloads/splendor-rules.pdf
+    summaryUrl: /downloads/splendor-summary.pdf

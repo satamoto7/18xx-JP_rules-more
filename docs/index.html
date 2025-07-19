@@ -1,0 +1,186 @@
+---
+layout: default
+title: ボードゲームルールライブラリ
+---
+
+<div class="search-section">
+  <input type="text" class="search-bar" placeholder="ゲーム名で検索..." id="searchInput">
+  <div class="filter-buttons">
+    <button class="filter-btn active" data-filter="all">すべて</button>
+    <button class="filter-btn" data-filter="beginner">初心者向け</button>
+    <button class="filter-btn" data-filter="intermediate">経験者向け</button>
+    <button class="filter-btn" data-filter="expert">エキスパート向け</button>
+  </div>
+</div>
+
+<div class="game-grid" id="gameGrid">
+  {% for game in site.data.games.games %}
+  <div class="game-card" data-difficulty="{{ game.difficulty }}" data-title="{{ game.title | downcase }}">
+    <div class="game-image">
+      {% if game.image %}
+        <img src="/assets/images/{{ game.image }}" alt="{{ game.title }}" onerror="this.style.display='none'; this.parentElement.innerHTML='🎲';">
+      {% else %}
+        🎲
+      {% endif %}
+    </div>
+    <div class="game-info">
+      <div class="game-title">{{ game.title }}</div>
+      <div class="game-difficulty difficulty-{{ game.difficulty }}">{{ game.difficultyText }}</div>
+    </div>
+    <div class="game-meta" style="display: none;">
+      <span class="players">{{ game.players }}</span>
+      <span class="time">{{ game.time }}</span>
+      <span class="age">{{ game.age }}</span>
+      <span class="description">{{ game.description }}</span>
+      <span class="rules-url">{{ game.rulesUrl }}</span>
+      <span class="summary-url">{{ game.summaryUrl }}</span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- ゲーム詳細モーダル -->
+<div id="gameModal" class="modal" style="display: none;">
+  <div class="modal-overlay" onclick="closeModal()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modalTitle">ゲームタイトル</h2>
+      <button class="close-btn" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-header">
+        <div class="detail-image" id="modalImage">🎲</div>
+        <div class="detail-info">
+          <div class="meta-info">
+            <p>プレイ人数: <span id="modalPlayers">2-4人</span></p>
+            <p>プレイ時間: <span id="modalTime">30-60分</span></p>
+            <p>対象年齢: <span id="modalAge">10歳以上</span></p>
+            <p>難易度: <span id="modalDifficulty">初心者向け</span></p>
+          </div>
+        </div>
+      </div>
+      <div class="description" id="modalDescription">
+        <p>ゲームの説明がここに入ります。</p>
+      </div>
+      <div class="download-section">
+        <h3>ダウンロード</h3>
+        <div class="download-links">
+          <a href="#" class="download-btn" id="modalRulesLink">
+            📄 ルール和訳 (PDF)
+          </a>
+          <a href="#" class="download-btn secondary" id="modalSummaryLink">
+            📋 サマリーシート (PDF)
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ゲームデータをJavaScriptで使用するために変換
+const games = [
+  {% for game in site.data.games.games %}
+  {
+    id: "{{ game.id }}",
+    title: "{{ game.title }}",
+    image: "{{ game.image }}",
+    players: "{{ game.players }}",
+    time: "{{ game.time }}",
+    age: "{{ game.age }}",
+    difficulty: "{{ game.difficulty }}",
+    difficultyText: "{{ game.difficultyText }}",
+    description: "{{ game.description | escape }}",
+    rulesUrl: "{{ game.rulesUrl }}",
+    summaryUrl: "{{ game.summaryUrl }}"
+  }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+];
+
+let currentFilter = 'all';
+let searchTerm = '';
+
+// 検索とフィルター機能
+function filterGames() {
+  const cards = document.querySelectorAll('.game-card');
+  
+  cards.forEach(card => {
+    const title = card.dataset.title;
+    const difficulty = card.dataset.difficulty;
+    
+    const matchesSearch = title.includes(searchTerm.toLowerCase());
+    const matchesFilter = currentFilter === 'all' || difficulty === currentFilter;
+    
+    if (matchesSearch && matchesFilter) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+// フィルターボタンの処理
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelector('.filter-btn.active').classList.remove('active');
+    this.classList.add('active');
+    currentFilter = this.dataset.filter;
+    filterGames();
+  });
+});
+
+// 検索バーの処理
+document.getElementById('searchInput').addEventListener('input', function(e) {
+  searchTerm = e.target.value;
+  filterGames();
+});
+
+// ゲームカードクリック時の処理
+document.querySelectorAll('.game-card').forEach(card => {
+  card.addEventListener('click', function() {
+    const title = this.querySelector('.game-title').textContent;
+    const game = games.find(g => g.title === title);
+    if (game) {
+      showGameModal(game);
+    }
+  });
+});
+
+// モーダル表示
+function showGameModal(game) {
+  document.getElementById('modalTitle').textContent = game.title;
+  document.getElementById('modalPlayers').textContent = game.players;
+  document.getElementById('modalTime').textContent = game.time;
+  document.getElementById('modalAge').textContent = game.age;
+  document.getElementById('modalDifficulty').textContent = game.difficultyText;
+  document.getElementById('modalDifficulty').className = `difficulty-${game.difficulty}`;
+  document.getElementById('modalDescription').innerHTML = `<p>${game.description}</p>`;
+  
+  // 画像の設定
+  const modalImage = document.getElementById('modalImage');
+  if (game.image) {
+    modalImage.innerHTML = `<img src="/assets/images/${game.image}" alt="${game.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='🎲';">`;
+  } else {
+    modalImage.textContent = '🎲';
+  }
+  
+  document.getElementById('modalRulesLink').href = game.rulesUrl;
+  document.getElementById('modalSummaryLink').href = game.summaryUrl;
+  
+  document.getElementById('gameModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+// モーダル閉じる
+function closeModal() {
+  document.getElementById('gameModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// ESCキーでモーダル閉じる
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeModal();
+  }
+});
+</script>
