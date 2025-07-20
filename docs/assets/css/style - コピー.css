@@ -309,14 +309,11 @@ main {
 }
 
 .download-btn.secondary {
-  background-color: #fff;         /* 塗りなし */
-  color: #3498db;                 /* 文字とアイコンを同系色に */
-  border: 2px solid #3498db;      /* 枠線でリンク感を出す */
+  background-color: #95a5a6;
 }
 
 .download-btn.secondary:hover {
-  background-color: #3498db;      /* ホバーで反転してアフォーダンス */
-  color: #fff;
+  background-color: #7f8c8d;
 }
 
 /* フッター */
@@ -330,7 +327,10 @@ footer {
 
 /* レスポンシブ */
 @media (max-width: 768px) {
-
+  .game-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
   
   .detail-header {
     flex-direction: column;
@@ -346,12 +346,33 @@ footer {
     width: 100%;
     justify-content: center;
   }
- 
+  
+  .modal-content {
+    width: 95%;
+    margin: 1rem;
+  }
+  
+  .modal-header,
+  .modal-body {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
   .filter-buttons {
     justify-content: center;
   }
-
+  
+  .game-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+  
+  .game-info {
+    padding: 0.75rem;
+  }
+  
+  .game-title {
+    font-size: 0.9rem;
+  }
 }

@@ -4,6 +4,7 @@ email: your-email@example.com
 description: >-
   ボードゲームのルール和訳とサマリーシートを提供するライブラリサイトです。
   初心者から上級者まで、様々なボードゲームを楽しむための情報をお届けします。
+  
 baseurl: "/18xx-JP_rules-more" # GitHub Pagesの場合は "/18xx-JP_rules-more"
 url: "https://satamoto7.github.io" # GitHub Pagesの場合は "https://satamoto7.github.io"
 

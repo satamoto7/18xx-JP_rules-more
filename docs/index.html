@@ -4,7 +4,7 @@ title: ボードゲームルールライブラリ
 ---
 
 <div class="search-section">
-  <input type="text" class="search-bar" placeholder="ゲーム名で検索..." id="searchInput">
+  <input type="text" class="search-bar" placeholder="ゲーム名で検索…" id="searchInput">
   <div class="filter-buttons">
     <button class="filter-btn active" data-filter="all">すべて</button>
     <button class="filter-btn" data-filter="beginner">初心者向け</button>
@@ -15,10 +15,13 @@ title: ボードゲームルールライブラリ
 
 <div class="game-grid" id="gameGrid">
   {% for game in site.data.games.games %}
-  <div class="game-card" data-difficulty="{{ game.difficulty }}" data-title="{{ game.title | downcase }}">
+  <div class="game-card" tabindex="0" data-difficulty="{{ game.difficulty }}" data-title="{{ game.title | downcase }}" data-rules-url="{{ game.rulesUrl }}" data-summary-url="{{ game.summaryUrl }}">
     <div class="game-image">
       {% if game.image %}
-        <img src="{{ '/assets/images/' | append: game.image | relative_url }}" alt="{{ game.title }}" onerror="this.style.display='none'; this.parentElement.innerHTML='🎲';">
+        <img src="{{ '/assets/images/' | append: game.image | relative_url }}"
+             alt="{{ game.title }}"
+             loading="lazy"
+             onerror="this.style.display='none'; this.parentElement.innerHTML='🎲';">
       {% else %}
         🎲
       {% endif %}
@@ -41,10 +44,10 @@ title: ボードゲームルールライブラリ
 <!-- ゲーム詳細モーダル -->
 <div id="gameModal" class="modal" style="display: none;">
   <div class="modal-overlay" onclick="closeModal()"></div>
-  <div class="modal-content">
+  <div class="modal-content" role="dialog" aria-modal="true">
     <div class="modal-header">
       <h2 id="modalTitle">ゲームタイトル</h2>
-      <button class="close-btn" onclick="closeModal()">&times;</button>
+      <button class="close-btn" aria-label="閉じる" onclick="closeModal()">&times;</button>
     </div>
     <div class="modal-body">
       <div class="detail-header">
@@ -113,10 +116,15 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 });
 
 // 検索バーの処理
-document.getElementById('searchInput').addEventListener('input', function(e) {
+function debounce(fn, wait = 200) {
+   let t; return (...args) => {
+     clearTimeout(t); t = setTimeout(() => fn.apply(this, args), wait);
+   };
+ }
+document.getElementById('searchInput').addEventListener('input', debounce(function(e) {
   searchTerm = e.target.value;
   filterGames();
-});
+}));
 
 // ゲームカードクリック時の処理
 document.querySelectorAll('.game-card').forEach(card => {
@@ -143,6 +151,14 @@ document.querySelectorAll('.game-card').forEach(card => {
       imageSrc: image ? image.src : null
     });
   });
+
+    /* ② 追加：Enter / Space でもクリックと同じ動きをさせる */
+  card.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();   // Space 押下時のページスクロール抑止
+      this.click();         // 既存の click 処理を再利用
+    }
+  });
 });
 
 // モーダル表示
@@ -158,14 +174,14 @@ function showGameModal(game) {
   // 画像の設定
   const modalImage = document.getElementById('modalImage');
   if (game.imageSrc) {
-    modalImage.innerHTML = `<img src="${game.imageSrc}" alt="${game.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='🎲';">`;
+    modalImage.innerHTML = `<img src="${game.imageSrc}" alt="${game.title}" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML='🎲';">`;
   } else {
     modalImage.textContent = '🎲';
   }
   
   // ダウンロードリンクの設定
-  document.getElementById('modalRulesLink').href = `${baseUrl}/downloads/${game.id}-rules.pdf`;
-  document.getElementById('modalSummaryLink').href = `${baseUrl}/downloads/${game.id}-summary.pdf`;
+  document.getElementById('modalRulesLink').href   = game.rulesUrl;
+  document.getElementById('modalSummaryLink').href = game.summaryUrl
   
   document.getElementById('gameModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
