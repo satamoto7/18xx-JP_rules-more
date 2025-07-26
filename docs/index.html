@@ -138,6 +138,8 @@ document.querySelectorAll('.game-card').forEach(card => {
     const description = this.querySelector('.description').textContent;
     const gameId = this.querySelector('.id').textContent;
     const image = this.querySelector('.game-image img');
+    const rulesUrl = this.dataset.rulesUrl;
+    const summaryUrl = this.dataset.summaryUrl;
     
     showGameModal({
       title: title,
@@ -148,7 +150,9 @@ document.querySelectorAll('.game-card').forEach(card => {
       difficulty: difficultyClass.replace('game-difficulty difficulty-', ''),
       description: description,
       id: gameId,
-      imageSrc: image ? image.src : null
+      imageSrc: image ? image.src : null,
+      rulesUrl: rulesUrl,
+      summaryUrl: summaryUrl
     });
   });
 
@@ -180,8 +184,8 @@ function showGameModal(game) {
   }
   
   // ダウンロードリンクの設定
-  document.getElementById('modalRulesLink').href   = game.rulesUrl;
-  document.getElementById('modalSummaryLink').href = game.summaryUrl
+  document.getElementById('modalRulesLink').href   = baseUrl + game.rulesUrl;
+  document.getElementById('modalSummaryLink').href = baseUrl + game.summaryUrl;
   
   document.getElementById('gameModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';

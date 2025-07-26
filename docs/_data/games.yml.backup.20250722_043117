@@ -1,4 +1,15 @@
 games:
+- id: splendor
+  title: 宝石の煌き
+  image: splendor.png
+  players: 2-4人
+  time: 30分
+  age: 10歳以上
+  difficulty: beginner
+  difficultyText: 初心者向け
+  description: 宝石商となって富と名声を競うエンジンビルディングゲームです。シンプルなルールで短時間で楽しめます。
+  rulesUrl: /downloads/splendor-rules.pdf
+  summaryUrl: /downloads/splendor-summary.pdf
 - id: 1880-china
   title: '1880'
   players: 3-7人
@@ -10,14 +21,3 @@ games:
   image: 1880-china.jpg
   rulesUrl: /downloads/rules/1880-china-rules.pdf
   summaryUrl: /downloads/summaries/1880-china-summary.pdf
-- title: 18Chesapeake
-  id: 18chesapeake
-  players: 2-6人
-  time: 180分
-  age: 13歳以上
-  difficulty: beginner
-  difficultyText: 初心者向け
-  description: 18xx入門編として作られているが、​シリーズ既プレイ者も楽しめる優等生
-  image: 18Chesapeake.png
-  rulesUrl: /downloads/rules/18chesapeake-rules.pdf
-  summaryUrl: /downloads/summaries/18chesapeake-summary.pdf
